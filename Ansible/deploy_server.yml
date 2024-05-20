@@ -1,0 +1,47 @@
+---
+- name: Deploy Server as a service on Ubuntu LTS Server
+  hosts: localhost
+  become: yes
+  tasks:
+    - name: Install required packages
+      apt:
+        pkg:
+          - python3
+          - python3-pip
+          - php-cgi
+        state: present
+        update_cache: yes
+
+    - name: Copy the entire code directory to the remote server
+      synchronize:
+        src: ../Code/
+        dest: /opt/Code/
+        recursive: yes
+
+    - name: Create a systemd service file for the server.py script
+      copy:
+        content: |
+          [Unit]
+          Description=Python Script as a Service
+          After=network.target
+
+          [Service]
+          Type=simple
+          ExecStart=/usr/bin/python3 /opt/Code/server.py 127.0.0.1 5500
+          WorkingDirectory=/opt/Code/
+          Restart=always
+          User=root
+
+          [Install]
+          WantedBy=multi-user.target
+        dest: /etc/systemd/system/server.service
+
+    - name: Reload systemd configuration
+      systemd:
+        daemon_reload: yes
+
+    - name: Enable and start the server.py service
+      systemd:
+        name: server
+        enabled: yes
+        state: started

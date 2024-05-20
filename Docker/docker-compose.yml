@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  web_server:
+    build: .
+    container_name: web_server
+    networks:
+      - app_net
+
+  web_server_2:
+    build: .
+    container_name: web_server_2
+    networks:
+      - app_net
+
+  nginx_proxy:
+    image: nginx:alpine
+    container_name: nginx_proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./config/ngnix.conf:/etc/nginx/nginx.conf
+      - ./certs:/etc/nginx/certs
+    depends_on:
+      - haproxy
+    networks:
+      - app_net
+
+  haproxy:
+    image: haproxy:2.5
+    container_name: haproxy
+    volumes:
+      - ./config/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+    depends_on:
+      - web_server
+      - web_server_2
+    networks:
+      - app_net
+
+networks:
+  app_net:

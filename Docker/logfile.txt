@@ -1,0 +1,5 @@
+[b'GET', b'/', b'HTTP/1.1']
+[b'GET', b'/favicon.ico', b'HTTP/1.1']
+[b'GET', b'/', b'HTTP/1.1']
+[b'GET', b'/', b'HTTP/1.1']
+[b'GET', b'/', b'HTTP/1.1']

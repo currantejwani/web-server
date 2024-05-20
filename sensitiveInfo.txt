@@ -1,0 +1,6 @@
+This is a Sensitive File
+
+password
+p@ssword
+passtype
+wordpass
